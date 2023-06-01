@@ -39,7 +39,7 @@ const LoginArea = props => {
       <div className='row'>
         <div className='col-6'>
           <p className={s.text}>
-            <a className={s.link}>
+            <a className={s.link} >
               Sign Up
             </a>
           </p>

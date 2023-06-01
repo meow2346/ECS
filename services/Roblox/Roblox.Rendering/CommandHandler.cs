@@ -241,6 +241,14 @@ namespace Roblox.Rendering
             }, cancellationToken);
         }
         
+
+        public static async Task<Stream> RequestHeadThumbnail(long assetId, CancellationToken? cancellationToken = null)
+        {
+            return await SendCmdWithErrHandlingAsync("GenerateThumbnailHead", new List<dynamic>
+            {
+                assetId, 
+            }, cancellationToken);
+        }
         public static async Task<Stream> RequestAssetMesh(long assetId, CancellationToken? cancellationToken = null)
         {
             return await SendCmdWithErrHandlingAsync("GenerateThumbnailMesh", new List<dynamic>

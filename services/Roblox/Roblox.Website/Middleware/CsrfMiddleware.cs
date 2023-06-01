@@ -133,6 +133,7 @@ public class CsrfMiddleware : ControllerServicesExtended
         "/auth",
         "/auth/signup",
         "/auth/discord",
+        "/auth/credits",
         "/auth/application",
         "/auth/application-check",
         "/internal/year",

@@ -17,14 +17,14 @@ ScriptContext.ScriptsDisabled = true
 Lighting.Outlines = false
 ContentProvider:SetBaseUrl('http://economy-simulator.org')
 print(ContentProvider.BaseUrl)
-game:GetService("ContentProvider"):SetAssetUrl(baseURL .. "/Asset/")
-game:GetService("InsertService"):SetAssetUrl(baseURL .. "/Asset/?id=%d")
-pcall(function() game:GetService("ScriptInformationProvider"):SetAssetUrl(url .. "/Asset/") end)
+game:GetService("ContentProvider"):SetAssetUrl(baseURL .. "/asset/")
+game:GetService("InsertService"):SetAssetUrl(baseURL .. "/asset/?id=%d")
+pcall(function() game:GetService("ScriptInformationProvider"):SetAssetUrl(url .. "/asset/") end)
 game:GetService("ContentProvider"):SetBaseUrl(baseURL .. "/")
 Players:SetChatFilterUrl(baseURL .. "/Game/ChatFilter.ashx")
 local Insert = game:GetService("InsertService")
-game:GetService("InsertService"):SetAssetUrl(baseURL .. "/Asset/?id=%d")
-game:GetService("InsertService"):SetAssetVersionUrl(baseURL .. "/Asset/?assetversionid=%d")
+game:GetService("InsertService"):SetAssetUrl(baseURL .. "/asset/?id=%d")
+game:GetService("InsertService"):SetAssetVersionUrl(baseURL .. "/asset/?assetversionid=%d")
 
 local didRun = false
 local assetId = assetId[1];
@@ -41,7 +41,7 @@ local assetId = assetId[1];
                 ['type'] = 'Asset',
                 ['assetId'] = assetId,
                 ['thumbnail'] = encoded,
-                ['accessKey'] = "AccessKey",
+                ['accessKey'] = "wBTlaKZ3J3CSoVl693g7",
                 ['jobId'] = jobId,
             }), Enum.HttpContentType.TextPlain)
         end)
@@ -55,11 +55,10 @@ local assetId = assetId[1];
             end
         end)
         print("load game...")
-        pcall(function()
+        local s,e = pcall(function()
             game:Load(baseURL .. "/asset/?id=" .. assetId)
         end)
         print("game load over")
-        render()
     end)
     print(ok, data);
     print("[debug] exit game");

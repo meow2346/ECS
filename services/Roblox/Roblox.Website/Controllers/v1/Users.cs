@@ -28,6 +28,7 @@ public class UsersControllerV1 : ControllerBase
     [HttpGet("users/{userId:long}")]
     public async Task<dynamic> GetUserById(long userId)
     {
+        var postCount = await services.forums.GetPostCount(userId);
         var info = await services.users.GetUserById(userId);
         var isBanned =
             info.accountStatus != AccountStatus.Ok && 
@@ -42,6 +43,7 @@ public class UsersControllerV1 : ControllerBase
             info.description,
             info.created,
             isBanned,
+            postCount
         };
     }
 

@@ -163,12 +163,6 @@
 						<a use:link class="nav-link" href="/admin/asset/copy"><CopyIcon /> Copy Asset</a>
 					</li>
 				{/if}
-				{#if rank.hasPermission("CreateBundleCopiedFromRoblox")}
-					<li class="nav-item ml-4">
-						<a use:link class="nav-link" href="/admin/bundle/copy"><CopyIcon /> Copy Bundle</a>
-					</li>
-				{/if}
-
 				{#if rank.hasPermission("SetAssetProduct")}
 					<li class="nav-item ml-4">
 						<a use:link class="nav-link" href="/admin/product/update"><EditIcon /> Update Item Product</a>
@@ -186,7 +180,7 @@
 				{/if}
 				{#if rank.hasPermission("GiveUserItem")}
 					<li class="nav-item ml-4">
-						<a use:link class="nav-link" href="/admin/asset/track"><RefreshCcwIcon /> Tack User Assets</a>
+						<a use:link class="nav-link" href="/admin/asset/track"><RefreshCcwIcon /> Track User Assets</a>
 					</li>
 				{/if}
 				{#if rank.hasPermission("RequestAssetReRender")}

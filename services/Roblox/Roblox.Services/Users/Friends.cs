@@ -94,7 +94,7 @@ public class FriendsService : ServiceBase, IService
             name = c.name,
             displayName = c.name,
             isOnline = (bool)(((DateTime)c.online_at).Add(TimeSpan.FromMinutes(5)) > DateTime.UtcNow),
-            isDeleted = c.status == AccountStatus.Deleted,
+            isDeleted = c.status == AccountStatus.Deleted || c.status == AccountStatus.Forgotten,
             isBanned = c.status != AccountStatus.Ok && c.status != AccountStatus.MustValidateEmail,
         });
 

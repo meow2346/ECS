@@ -140,8 +140,8 @@ end
 
         for _, object in pairs(Player.Character:GetChildren()) do
             if object:IsA('Tool') then
-                print("[debug] player has a tool - set arm angle (R6)")
-                Player.Character.Torso['Right Shoulder'].CurrentAngle = math.pi / 2
+                print("Player has gear, raise the right arm out.")
+                Player.Character.Torso['Right Shoulder'].CurrentAngle = math.rad(90)
             end
         end
 

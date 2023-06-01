@@ -38,7 +38,6 @@ import ManageUserTrades from "./pages/ManageUserTrades.svelte";
 import TrackUserAsset from "./pages/TrackUserAsset.svelte";
 import AbuseReports from "./pages/AbuseReports.svelte";
 import ResolveAsset from "./pages/ResolveAsset.svelte";
-import CopyRobloxBundle from "./pages/CopyRobloxBundle.svelte";
 import Permissions from "./pages/Permissions.svelte";
 import ForceApplication from "./pages/ForceApplication.svelte";
 	// import 'bootstrap';
@@ -126,9 +125,6 @@ import ForceApplication from "./pages/ForceApplication.svelte";
 		</Route>
 		<Route path="/admin/asset/copy">
 			<CopyRobloxClothing />
-		</Route>
-		<Route path="/admin/bundle/copy">
-			<CopyRobloxBundle />
 		</Route>
 		<Route path="/admin/asset/approval">
 			<AssetApproval />

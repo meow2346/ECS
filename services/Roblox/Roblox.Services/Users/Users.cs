@@ -298,6 +298,10 @@ public class UsersService : ServiceBase, IService
             if (nameToCheck.StartsWith(badCharacter) || nameToCheck.EndsWith(badCharacter)) return false;
         }
 
+        // manual greek filter
+
+        if (nameToCheck.Contains("K")) return false;
+
         var normalizedNameArray = UsernameValidationRegex.Match(nameToCheck);
         if (!normalizedNameArray.Success) return false;
         var normalizedName = normalizedNameArray.Value;
@@ -309,9 +313,21 @@ public class UsersService : ServiceBase, IService
             if (normalizedName[i-1] == ' ' && normalizedName[i] == ' ') return false;
         }
 
-        // world filter, removing spaces and other words
+        // word filter, removing spaces and other words
         var lowerName = string.Join("", nameToCheck.ToLower().Split(" "));
         if (lowerName.Contains("nigg") || lowerName.Contains("n1gg") || lowerName.Contains("niigg") || lowerName.Contains("n11gg"))
+            return false;
+        if (lowerName.Contains("fuck"))
+            return false;
+        if (lowerName.Contains("b1tch") || lowerName.Contains("bitch"))
+            return false;
+        if (lowerName.Contains("sh1t") || lowerName.Contains("shit"))
+            return false;
+        if (lowerName.Contains("ass") || lowerName.Contains("4ss") || lowerName.Contains("a55"))
+            return false;
+        if (lowerName.Contains("sex") || lowerName.Contains("s3x") || lowerName.Contains("5ex"))
+            return false;
+        if (lowerName.Contains("cum"))
             return false;
         if (lowerName.Contains("porn") || lowerName.Contains("p0rn"))
             return false;
@@ -1546,13 +1562,11 @@ public class UsersService : ServiceBase, IService
                 throw new InternalPurchaseFailureException(InternalPurchaseFailReason.UserAssetPriceIsLessThanOne);
             log.Info("price = {0} sellerId = {1}", userAsset.price, userAsset.userId);
             var copies = await GetUserAssets(userIdBuyer, userAsset.assetId);
-            
-            // Hoard Limit for purchases, which I have disabled.
 
-            //var maxPossibleCopies = await GetMaximumCopyCount(userAsset.assetId);
-            //if (copies.Count() >= maxPossibleCopies)
-            //    throw new InternalPurchaseFailureException(InternalPurchaseFailReason
-             //       .UserWouldExceedMaximumCopiesIfPurchased);
+            var maxPossibleCopies = await GetMaximumCopyCount(userAsset.assetId);
+            if (copies.Count() >= maxPossibleCopies)
+                throw new InternalPurchaseFailureException(InternalPurchaseFailReason
+                  .UserWouldExceedMaximumCopiesIfPurchased);
             
             // Check balance
             using var ec = ServiceProvider.GetOrCreate<EconomyService>(this);
@@ -2241,15 +2255,6 @@ public class UsersService : ServiceBase, IService
             throw new ArgumentException("Password reset was already redeemed");
         
         await UpdatePassword(ticket.userId, newPassword);
-        
-        // Unlock the account, if required
-        var info = await GetUserById(ticket.userId);
-        if (info.accountStatus == AccountStatus.MustValidateEmail)
-        {
-            // Account can be unlocked now.
-            // TODO: is this safe?
-            await UnlockAccount(ticket.userId);
-        }
     }
 
     public bool IsThreadSafe()

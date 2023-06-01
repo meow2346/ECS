@@ -145,6 +145,13 @@ public class UpdateProductRequest
     public DateTime? offsaleDeadline { get; set; }
 }
 
+public class UpdateNameRequest
+{
+    // TODO: Add Description Support.
+    public long assetId { get; set; }
+    public string newName { get; set; }
+}
+
 
 public class CreateAssetRequest
 {

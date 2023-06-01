@@ -14,10 +14,11 @@
 			name: 'Bad Username',
 			text: 'Your username is inappropriate for Roblox.',
 		},
-		{
-			name: 'Bad Username (Privacy Issue)',
-			text: 'Your username is not appropriate for Roblox due to privacy concerns. ',
-		},
+		// fuck this shit, bad username is enough already, and you can type your own reason.
+		//{
+		//	name: 'Bad Username (Privacy Issue)',
+		//	text: 'Your username is not appropriate for Roblox due to privacy concerns. ',
+		//},
 		{
 			name: 'Spam',
 			text: 'Do not repeatedly post spam chat or content in Roblox.',
@@ -45,6 +46,10 @@
 		{
 			name: 'Pois Lims',
 			text: 'Your account has been moderated for facilitating account theft by receiving and/or moving stolen items.',
+		},
+		{
+			name: 'Alting',
+			text: 'Your account has been moderated for buying limiteds on alternative accounts.',
 		},
 		{
 			name: 'Closed as Compromised',

@@ -480,6 +480,15 @@ public class AssetsService : ServiceBase, IService
         await InsertOrReplaceThumbnail(assetId, latestVersion.assetVersionId, key, ModerationStatus.ReviewApproved);
     }
 
+    private async Task CreateHeadThumbnail(long assetId, CancellationToken? cancellationToken = null)
+    {
+        var latestVersion = await GetLatestAssetVersion(assetId);
+        var response = await Rendering.CommandHandler.RequestHeadThumbnail(assetId, cancellationToken);
+        var key = await UploadAssetContent(response, Configuration.ThumbnailsDirectory, "png");
+        await InsertOrReplaceThumbnail(assetId, latestVersion.assetVersionId, key, ModerationStatus.ReviewApproved);
+    }
+
+
     private async Task CreateGameThumbnail(long assetId, CancellationToken? cancellationToken = null)
     {
         var latestVersion = await GetLatestAssetVersion(assetId);
@@ -593,6 +602,79 @@ public class AssetsService : ServiceBase, IService
             ModerationStatus.AwaitingApproval);
     }
 
+    private async Task CreateBodyPartThumbnail(long assetId, Models.Assets.Type assetType, CancellationToken? cancellationToken = null)
+    {
+        // get the clothing id, which is mainly why we need a whole serperate function
+        // TODO: Maybe make this one function in CreateClothingThumbnail?
+
+        var clothingId = (long) 0; // this has to be here so shit doesn't complain
+        var modelThing = Models.Assets.Type.Torso; // TODO: Do we really need this?
+        // start setting up the values
+
+        if (Models.Assets.Type.Torso == assetType) {
+            modelThing = Models.Assets.Type.Torso;
+            clothingId = Roblox.Configuration.PackageTorsoAssetId;
+        }
+
+        if (Models.Assets.Type.LeftArm == assetType) {
+            modelThing = Models.Assets.Type.LeftArm;
+            clothingId = Roblox.Configuration.PackageLeftArmAssetId;
+        }
+
+        if (Models.Assets.Type.RightArm == assetType) {
+            modelThing = Models.Assets.Type.RightArm;
+            clothingId = Roblox.Configuration.PackageRightArmAssetId;
+        }
+
+        if (Models.Assets.Type.LeftLeg == assetType) {
+            modelThing = Models.Assets.Type.LeftLeg;
+            clothingId = Roblox.Configuration.PackageLeftLegAssetId;
+        }
+
+        if (Models.Assets.Type.RightLeg == assetType) {
+            modelThing = Models.Assets.Type.RightLeg;
+            clothingId = Roblox.Configuration.PackageRightLegAssetId;
+        }
+
+        var latestVersion = await GetLatestAssetVersion(assetId);
+        var response = await Rendering.CommandHandler.RequestPlayerThumbnail(new()
+        {
+            userId = assetId,
+            playerAvatarType = "R6",
+            assets = new List<AvatarAssetEntry>()
+            {
+                new AvatarAssetEntry()
+                {
+                    id = assetId,
+                    assetType = new AvatarAssetTypeEntry()
+                    {
+                        id = (int) assetType,
+                    }
+                },
+                new AvatarAssetEntry()
+                {
+                    id = clothingId,
+                    assetType = new AvatarAssetTypeEntry()
+                    {
+                        id = (int) modelThing,
+                    }
+                }
+            },
+            bodyColors = new AvatarBodyColors()
+            {
+                headColorId = 1001,
+                torsoColorId = 1001,
+                leftArmColorId = 1001,
+                rightArmColorId = 1001,
+                leftLegColorId = 1001,
+                rightLegColorId = 1001,
+            },
+        }, cancellationToken);
+        var key = await UploadAssetContent(response, Configuration.ThumbnailsDirectory, "png");
+        await InsertOrReplaceThumbnail(assetId, latestVersion.assetVersionId, key,
+            ModerationStatus.AwaitingApproval);
+    }
+
     #endregion
 
     /// <summary>
@@ -615,14 +697,18 @@ public class AssetsService : ServiceBase, IService
             // clothing
             case Models.Assets.Type.Shirt:
             case Models.Assets.Type.Pants:
+                 thumbRequests.Add(CreateClothingThumbnail(assetId, assetType, cancellationToken));
+                 break;
             // package stuff
-            case Type.Torso:
             case Type.Head:
+                 thumbRequests.Add(CreateHeadThumbnail(assetId, cancellationToken));
+                 break;
+            case Type.Torso:
             case Type.LeftArm: 
             case Type.RightArm:
             case Type.LeftLeg:
             case Type.RightLeg:
-                thumbRequests.Add(CreateClothingThumbnail(assetId, assetType, cancellationToken));
+                thumbRequests.Add(CreateBodyPartThumbnail(assetId, assetType, cancellationToken));
                 break;
             case Models.Assets.Type.Package:
                 thumbRequests.Add(CreatePackageThumbnail(assetId, cancellationToken));
@@ -926,7 +1012,7 @@ public class AssetsService : ServiceBase, IService
     public async Task<ProductEntry> GetProductForAsset(long assetId)
     {
         var result = await db.QuerySingleOrDefaultAsync<ProductEntry>(
-            "SELECT name, is_for_sale as isForSale, is_limited as isLimited, is_limited_unique as isLimitedUnique, price_robux as priceRobux, price_tix as priceTickets, serial_count as serialCount, offsale_at as offsaleAt FROM asset WHERE id = :id",
+            "SELECT name, description,  is_for_sale as isForSale, is_limited as isLimited, is_limited_unique as isLimitedUnique, price_robux as priceRobux, price_tix as priceTickets, serial_count as serialCount, offsale_at as offsaleAt FROM asset WHERE id = :id",
             new
             {
                 id = assetId,
@@ -995,6 +1081,16 @@ public class AssetsService : ServiceBase, IService
             updated_at = DateTime.UtcNow,
         });
     }
+
+    // TODO: Description Support
+    public async Task UpdateAssetNameAndDesc(long assetId, string newName)
+    {
+        await UpdateAsync("asset", assetId, new
+        {
+            name = newName
+        });
+    }
+
 
     public async Task<Dto.Assets.MultiGetEntryLowestSeller?> GetLowestPrice(long assetId)
     {
@@ -1542,7 +1638,7 @@ WHERE asset_type = :asset_type AND asset.id < :id AND NOT asset.is_18_plus ORDER
     public async Task<bool> CanUserModifyItem(long assetId, long userId)
     {
         // todo: move IsOwner() to service
-        if (userId == 12) return true;
+        if (userId == 3) return true;
         
         var details = await GetAssetCatalogInfo(assetId);
         switch (details.creatorType)

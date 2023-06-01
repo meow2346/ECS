@@ -19,7 +19,7 @@ import SellItemModal from "./components/sellItemModal";
 import CatalogDetailsPage from "./stores/catalogDetailsPage";
 import AdBanner from "../ad/adBanner";
 import AdSkyscraper from "../ad/adSkyscraper";
-import { addOrRemoveFromCollections } from "../../services/catalog";
+import { addOrRemoveFromCollections, deleteFromInventory } from "../../services/catalog";
 import { getCollections } from "../../services/inventory";
 import getFlag from "../../lib/getFlag";
 import Owners from "./components/owners";
@@ -153,6 +153,18 @@ const CatalogDetails = props => {
                     name: 'Advertise',
                     url: '/My/CreateUserAd.aspx?targetId=' + props.details.id + '&targetType=asset',
                   },
+                  // delete from inventory button here
+                  /*store.ownedCopies && store.ownedCopies.length > 0 ? {
+                      name: 'Delete',
+                      onClick: e => {
+                        let res = prompt('Are you sure you want to PERMANENTLY delete this item from your inventory? Type yes to confirm.');
+                        if (res === 'yes') {
+                          console.log("[info] deleting asset id " + props.details.id)
+                          deleteFromInventory({assetId: props.details.id})
+                        }
+                        ;
+                      },
+                    } : null,*/
                   store.inCollection ? {
                     name: 'Remove From Collection',
                     onClick: e => {

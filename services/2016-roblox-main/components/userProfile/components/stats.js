@@ -43,7 +43,7 @@ const Statistics = props => {
         <div className='row pt-4 pb-2'>
           <StatisticEntry label='Join Date' value={dayjs(store.userInfo.created).format('M/DD/YYYY')}></StatisticEntry>
           <StatisticEntry label='Place Visits' value={(0).toLocaleString()}></StatisticEntry>
-          <StatisticEntry label='Forum Posts' value={(0).toLocaleString()}></StatisticEntry>
+          <StatisticEntry label='Forum Posts' value={store.userInfo.postCount}></StatisticEntry>
         </div>
       </div>
     </div>

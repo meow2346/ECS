@@ -101,6 +101,12 @@ export const addOrRemoveFromCollections = ({ assetId, addToProfile }) => {
   })
 }
 
+export const deleteFromInventory = ({ assetId }) => {
+  return request ('POST', getBaseUrl() + "apisite/inventory/v1/delete-from-inventory", {
+    assetId: assetId
+  })
+}
+
 export const getIsFavorited = async ({assetId, userId}) => {
   return await request('GET', getFullUrl('catalog', '/v1/favorites/users/'+userId+'/assets/'+assetId+'/favorite')).then(d => d.data);
 }

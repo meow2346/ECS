@@ -18,7 +18,7 @@ public class PasswordReset : RobloxPageModel
     private const string InvalidUsernameMessage = "The username specified is invalid.";
     private const string UnsupportedSiteException = "The site used to verify your account is currently not supported for password resets. We plan to add support for more sites in the future. Check back later. Please do not contact support as they cannot help you.";
     private const string MissingVerificationUrl = "The social media URL used to create your account is no longer valid. You cannot reset your password.";
-    private const string VerificationIdChanged = "The ID of the social media account this username belonged to has changed. You can no longer change the password for this account.";
+    private const string VerificationIdChanged = "The ID of  account this username belonged to has changed. You can no longer change the password for this account.";
     private const string CannotGenerateVerificationPhrase = "Unable to generate verification phrase.";
     private const string CannotFindPhrase = "Could not find the phrase on your social media profile. You may have to wait a few minutes and try again.";
     private const string Cooldown = "Too many attempts. Try again in a few minutes.";

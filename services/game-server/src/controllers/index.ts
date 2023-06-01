@@ -872,6 +872,17 @@ export default class CommandHandler extends StdExceptions {
 		return (await getResult(job.jobId, resolutionMultiplier.asset)).thumbnail;
 	}
 
+	public async GenerateThumbnailHead(assetId: number): Promise<string> {
+		const job = this.createSoapRequest(
+			scripts.headThumbnail
+				.replace(/\{1234\}/g, `{${assetId}}`)
+				.replace(/_X_RES_/g, (420 * resolutionMultiplier.asset).toString())
+				.replace(/_Y_RES_/g, (420 * resolutionMultiplier.asset).toString())
+		, uuid.v4());
+		this.addToQueue(job);
+		return (await getResult(job.jobId, resolutionMultiplier.asset)).thumbnail;
+	}
+
 	public async GenerateThumbnailGame(assetId: number, x = 640, y = 360): Promise<string> {
 		const job = this.createSoapRequest(
 			scripts.gameThumbnail

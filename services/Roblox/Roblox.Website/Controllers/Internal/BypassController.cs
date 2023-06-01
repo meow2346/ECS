@@ -90,7 +90,7 @@ namespace Roblox.Website.Controllers
 
         private bool IsRcc()
         {
-            var rccAccessKey = Request.Headers.ContainsKey("accesskey") ? Request.Headers["accesskey"].ToString() : null;
+            var rccAccessKey = Request.Headers.ContainsKey("accessKey") ? Request.Headers["accessKey"].ToString() : null;
             var isRcc = rccAccessKey == Configuration.RccAuthorization;
             return isRcc;
         }
@@ -354,7 +354,7 @@ namespace Roblox.Website.Controllers
                         }
                     }
 
-                    if (ok && latestVersion.contentUrl != null)
+                    if (latestVersion.contentUrl != null)
                     {
                         assetContent = await services.assets.GetAssetContent(latestVersion.contentUrl);
                     }

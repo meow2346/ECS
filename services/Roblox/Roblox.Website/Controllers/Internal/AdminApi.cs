@@ -188,7 +188,7 @@ public class AdminApiController : ControllerBase
             throw new StaffException("InternalServerError");
         }
 
-        if (safeUserSession.userId != 3)
+        if (!StaffFilter.IsOwner(userSession.userId))
             throw new Exception("InternalServerError");
 
         await services.users.AddStaffPermission(userId, permission);
@@ -274,8 +274,6 @@ public class AdminApiController : ControllerBase
     [HttpPost("force-application"), StaffFilter(Access.ForceApplication)]
     public async Task<dynamic> ForceApplication([Required, FromBody] ForceApplicationReq req)
     {
-        if (req.userId == null)
-            throw new StaffException("Bad userId");
         if (req.socialURL == null)
             throw new StaffException("Bad Social URL");
 
@@ -489,7 +487,7 @@ public class AdminApiController : ControllerBase
         if (!request.isApproved)
         {
             var details = await services.assets.GetAssetCatalogInfo(request.assetId);
-            var minCreationTime = DateTime.UtcNow.Subtract(TimeSpan.FromDays(14));
+            var minCreationTime = DateTime.UtcNow.Subtract(TimeSpan.FromDays(7));
             if (details.createdAt < minCreationTime)
             {
                 throw new StaffException("This asset cannot be deleted since it was created too long ago");
@@ -1396,10 +1394,35 @@ public class AdminApiController : ControllerBase
             });
     }
 
+    [HttpPost("removetickets"), StaffFilter(Access.GiveUserRobux)]
+    public async Task RemoveUserTickets([Required, FromBody] GiveUserTicketsRequest request)
+    {
+        // temporary
+
+        if (request.tickets is <= 0 or > 10000000)
+            throw new StaffException("Invalid tickets amount. Must be between 1 and 10M (inclusive)");
+
+        await db.ExecuteAsync("UPDATE user_economy SET balance_tickets = balance_tickets - :amt WHERE user_id = :user_id",
+            new
+            {
+                user_id = request.userId,
+                amt = request.tickets,
+            });
+        await db.ExecuteAsync(
+            "INSERT INTO moderation_give_tickets (user_id, author_user_id, amount) VALUES (:user_id, :author_user_id, :amount)",
+            new
+            {
+                user_id = request.userId,
+                author_user_id = userSession.userId,
+                amount = -request.tickets,
+            });
+    }
+
     [HttpPost("giverobux"), StaffFilter(Access.GiveUserRobux)]
     public async Task GiveUserRobux([Required, FromBody] GiveUserRobuxRequest request)
     {
         // temporary
+
         if (request.robux is <= 0 or > 10000000)
             throw new StaffException("Invalid robux amount. Must be between 1 and 10M (inclusive)");
 
@@ -1416,6 +1439,29 @@ public class AdminApiController : ControllerBase
                 user_id = request.userId,
                 author_user_id = userSession.userId,
                 amount = request.robux,
+            });
+    }
+
+    [HttpPost("removerobux"), StaffFilter(Access.GiveUserRobux)]
+    public async Task RemoveUserRobux([Required, FromBody] GiveUserRobuxRequest request)
+    {
+        // temporary
+        if (request.robux is <= 0 or > 10000000)
+            throw new StaffException("Invalid robux amount. Must be between 1 and 10M (inclusive)");
+
+        await db.ExecuteAsync("UPDATE user_economy SET balance_robux = balance_robux - :amt WHERE user_id = :user_id",
+            new
+            {
+                user_id = request.userId,
+                amt = request.robux,
+            });
+        await db.ExecuteAsync(
+            "INSERT INTO moderation_give_robux (user_id, author_user_id, amount) VALUES (:user_id, :author_user_id, :amount)",
+            new
+            {
+                user_id = request.userId,
+                author_user_id = userSession.userId,
+                amount = -request.robux,
             });
     }
 
@@ -1541,6 +1587,8 @@ public class AdminApiController : ControllerBase
     [HttpPost("user/delete"), StaffFilter(Access.DeleteUser)]
     public async Task DeleteUser([Required, FromBody] UserIdRequest request)
     {
+        if (!StaffFilter.IsOwner(userSession.userId))
+            throw new StaffException("Only the owner can GDPR delete accounts");
         if (await IsStaff(request.userId))
             throw new StaffException("Cannot delete this user");
         var k = "staff:userdeletion:v1";
@@ -1713,7 +1761,7 @@ Thank you for your understanding,
         var eligibleItems = await db.QueryAsync<LotteryItemEntry>("SELECT a.name, a.id as assetId, a.recent_average_price as recentAveragePrice, u.id as userId, u.online_at as onlineAt, u.username, ua.id as userAssetId FROM user_asset ua INNER JOIN \"user\" u on u.id = ua.user_id INNER JOIN \"asset\" a ON a.id = ua.asset_id WHERE u.id != 1 AND u.online_at <= :time AND (a.is_limited OR a.is_limited_unique) AND NOT a.is_for_sale AND u.status = :status ORDER BY u.online_at LIMIT 1000", new
         {
             status = AccountStatus.Ok,
-            time = DateTime.UtcNow.Subtract(TimeSpan.FromDays(31 * 6)), // currently about 6 months
+            time = DateTime.UtcNow.Subtract(TimeSpan.FromDays(31)), // currently about 1 month
         });
         return eligibleItems;
     }
@@ -1836,68 +1884,13 @@ Thank you for your understanding,
         await services.assets.SetItemPrice(request.assetId, request.priceRobux, request.priceTickets);
     }
 
-    [HttpPost("bundle/copy-from-roblox"), StaffFilter(Access.CreateBundleCopiedFromRoblox)]
-    public async Task<dynamic> CopyBundle(long bundleId)
+    [HttpPatch("asset/name"), StaffFilter(Access.SetAssetProduct)]
+    public async Task UpdateAssetInfo([Required, FromBody] UpdateNameRequest request)
     {
-        var details = await services.robloxApi.GetBundle(bundleId);
-        if (details.bundleType != "BodyParts") throw new StaffException("Invalid bundleType " + details.bundleType);
-        
-        // Check if duplicate?
-        var alreadyExists = await services.assets.SearchCatalog(new CatalogSearchRequest()
-        {
-            limit = 10,
-            include18Plus = true,
-            includeNotForSale = true,
-            creatorType = CreatorType.User,
-            creatorTargetId = 1,
-            keyword = details.name,
-        });
-        if (alreadyExists._total > 0)
-        {
-            var existing = await services.assets.MultiGetInfoById(alreadyExists.data.Select(c => c.id));
-            foreach (var ent in existing)
-            {
-                if (ent.assetType == Type.Package && ent.name == details.name)
-                {
-                    throw new StaffException("It looks like this bundle already exists: AssetID=" + ent.id);
-                }
-            }
-        }
-
-        var ids = new List<long>();
-        foreach (var item in details.items)
-        {
-            if (item.type != "Asset") continue;
-            Console.WriteLine("Getting {0}", item.id);
-            var info = await services.robloxApi.GetProductInfo(item.id, false);
-            
-            var content = await services.robloxApi.GetAssetContent(item.id);
-            var isOk = await services.assets.ValidateAssetFile(content, info.AssetTypeId.Value);
-            if (!isOk)
-                throw new StaffException("The asset file doesn't look correct. Please try again.");
-            content.Position = 0;
-            // Make the item!
-            var assetDetails = await services.assets.CreateAsset(item.name, null, 1,
-                CreatorType.User, 1, content, info.AssetTypeId.Value, Genre.All, ModerationStatus.ReviewApproved,
-                DateTime.UtcNow, DateTime.UtcNow, item.id);
-            ids.Add(assetDetails.assetId);
-        }
-
-        // Now make the bundle
-        return await CreateAsset(new CreateAssetRequest()
-        {
-            assetTypeId = Type.Package,
-            description = details.description,
-            genre = Genre.All,
-            isForSale = false,
-            isLimited = false,
-            isLimitedUnique = false,
-            maxCopies = null,
-            name = details.name,
-            offsaleDeadline = null,
-            packageAssetIds = string.Join(",", ids.Select(c => c.ToString())),
-        });
+        await services.assets.UpdateAssetNameAndDesc(request.assetId, request.newName);
     }
+
+    //  fuck copy bundle
 
     [HttpPost("asset/copy-from-roblox"), StaffFilter(Access.CreateAssetCopiedFromRoblox)]
     public async Task<dynamic> CopyAssetFromRoblox([Required, FromBody] CopyAssetRequest request)
@@ -2164,6 +2157,21 @@ Thank you for your understanding,
         await FeatureFlags.DisableFlag(Enum.Parse<FeatureFlag>(featureFlag));
     }
 
+    [HttpGet("players/total"), StaffFilter(Access.GetStats)]
+    public async Task<dynamic> GetTotalSignedUp()
+    {
+        var t = DateTime.UtcNow.Subtract(TimeSpan.FromSeconds(60));
+        var result = await db.QuerySingleOrDefaultAsync("SELECT COUNT(*) as total FROM \"user\"", new
+        {
+            t,
+        });
+        return new
+        {
+            total = (long) result.total,
+        };
+    }
+
+
     [HttpGet("players/in-game"), StaffFilter(Access.GetUsersInGame)]
     public async Task<dynamic> GetInGamePlayers()
     {
@@ -2229,7 +2237,7 @@ Thank you for your understanding,
     }
 
     [HttpPost("users/{userId:long}/reset-username"), StaffFilter(Access.ResetUsername)]
-    public async Task ResetUsername(long userId)
+    public async Task ResetUsername(long userId, bool? banUsername)
     {
         if (!StaffFilter.IsOwner(userSession.userId))
         {
@@ -2246,13 +2254,16 @@ Thank you for your understanding,
         var userData = await services.users.GetUserById(userId);
         if (userData.isModerator || userData.isAdmin || await IsStaff(userData.userId))
             throw new StaffException("Cannot change this user's username");
-        // ban the username
-        await services.users.AddBadUsername(userData.username);
+        // ban the username if chosen to
+        if (banUsername != null) {
+            await services.users.AddBadUsername(userData.username);
+        }
         // reset
         await services.users.ResetUsername(userId, userSession.userId);
         // message
         await services.privateMessages.CreateMessage(userId, 1, "Username Reset",
             "Hello,\n\nYour username has been reset due to abuse concerns. You can request a new username by contacting a staff member.\n\n-The Roblox Team");
+       
     }
 
     [HttpGet("applications/update-lock"), StaffFilter(Access.ManageApplications)]

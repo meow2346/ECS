@@ -15,6 +15,7 @@ const scripts: Record<string, string> = {
 	imageTexture: fs.readFileSync(path.join(__dirname, '../scripts/asset/image.lua')).toString(),
 	assetThumbnail: fs.readFileSync(path.join(__dirname, '../scripts/asset/asset.lua')).toString(),
 	meshThumbnail: fs.readFileSync(path.join(__dirname, '../scripts/asset/mesh.lua')).toString(),
+	headThumbnail: fs.readFileSync(path.join(__dirname, '../scripts/asset/head.lua')).toString(),
 	gameThumbnail: fs.readFileSync(path.join(__dirname, '../scripts/asset/game.lua')).toString(),
 }
 

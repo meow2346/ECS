@@ -1564,8 +1564,8 @@ public class GroupsService : ServiceBase, IService
         if (!perms)
             throw new RobloxException(401, 0, "Unauthorized");
         // limit to group owner for now
-        if (recipientUserId != actorUserId)
-            throw new RobloxException(400, 0, "Group payouts can only be made to the group owner at this time");
+        //if (recipientUserId != actorUserId)
+        //    throw new RobloxException(400, 0, "Group payouts can only be made to the group owner at this time");
         if (amount <= 0)
             throw new RobloxException(400, 0, "Invalid amount");
         if (!Enum.IsDefined(currency))

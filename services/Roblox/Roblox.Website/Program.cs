@@ -46,6 +46,7 @@ Roblox.Configuration.HCaptchaPublicKey = configuration.GetSection("HCaptcha:Publ
 Roblox.Configuration.HCaptchaPrivateKey = configuration.GetSection("HCaptcha:Private").Value;
 Roblox.Configuration.GameServerAuthorization = configuration.GetSection("GameServerAuthorization").Value;
 Roblox.Configuration.BotAuthorization = configuration.GetSection("BotAuthorization").Value;
+//TODO: ADD THIS BACK!!
 //IConfiguration gameServerConfig = new ConfigurationBuilder().AddJsonFile("game-servers.json").Build();
 //Roblox.Configuration.GameServerIpAddresses = gameServerConfig.GetSection("GameServers").Get<IEnumerable<GameServerConfigEntry>>();
 Roblox.Configuration.RccAuthorization = configuration.GetSection("RccAuthorization").Value;
@@ -54,9 +55,16 @@ Roblox.Configuration.AssetValidationServiceUrl =
 Roblox.Configuration.AssetValidationServiceAuthorization =
     configuration.GetSection("AssetValidation:Authorization").Value;
 Roblox.Services.GameServerService.Configure(string.Join(Guid.NewGuid().ToString(), new int [16].Select(_ => Guid.NewGuid().ToString()))); // More TODO: If we every load balance, this will break
+// Package Clothing
 Roblox.Configuration.PackageShirtAssetId = long.Parse(configuration.GetSection("PackageShirtAssetId").Value);
 Roblox.Configuration.PackagePantsAssetId = long.Parse(configuration.GetSection("PackagePantsAssetId").Value);
+Roblox.Configuration.PackageLeftArmAssetId = long.Parse(configuration.GetSection("PackageLeftArmAssetId").Value);
+Roblox.Configuration.PackageRightArmAssetId = long.Parse(configuration.GetSection("PackageRightArmAssetId").Value);
+Roblox.Configuration.PackageLeftLegAssetId = long.Parse(configuration.GetSection("PackageLeftLegAssetId").Value);
+Roblox.Configuration.PackageRightLegAssetId = long.Parse(configuration.GetSection("PackageRightLegAssetId").Value);
+Roblox.Configuration.PackageTorsoAssetId = long.Parse(configuration.GetSection("PackageTorsoAssetId").Value);
 Roblox.Libraries.TwitterApi.TwitterApi.Configure(configuration.GetSection("Twitter:Bearer").Value);
+
 // Sign up asset ids
 var assetIdsStart = configuration.GetSection("SignupAssetIds").GetChildren().Select(assetIdStr => long.Parse(assetIdStr.Value));
 Roblox.Configuration.SignupAssetIds = assetIdsStart;

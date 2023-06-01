@@ -7,7 +7,7 @@ import Link from "../link";
  * @returns 
  */
 const CreatorLink = (props) => {
-  const url = (props.type === 'User' || props.type === 1) ? '/User.aspx?ID=' + props.id : '/My/Groups.aspx?gid=' + props.id;
+  const url = (props.type === 'User' || props.type === 1) ? '/users/' + props.id + "/profile" : '/My/Groups.aspx?gid=' + props.id;
   return <Link href={url}>
     <a>
       {props.name}

@@ -21,6 +21,7 @@
 		priceRobux: number | null;
 		priceTickets: number|null;
 		serialCount: number | null;
+		
 		offsaleAt: string | null;
 	}
 	let assetDetails: Partial<IDetailsResponse> = {};
@@ -163,12 +164,9 @@
 							isLimitedUnique = true;
 						}
 					}
-					let maxSerial = null;
+					let maxSerial = getElementById("max-copies").value || null;
 					if (getElementById("max-copies")) {
 						let maxSerial = getElementById("max-copies").value;
-
-						// This code here breaks the max copies on updating an asset product, so it is stripped.
-
 						if (Number.isSafeInteger(parseInt(maxSerial, 10))) {
 							maxSerial = parseInt(maxSerial, 10);
 						}else{

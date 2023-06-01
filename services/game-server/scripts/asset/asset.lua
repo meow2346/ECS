@@ -32,7 +32,7 @@ ContentProvider:SetBaseUrl('http://economy-simulator.org')
         -- get assetmodel
 
         for i,v in pairs(model:GetChildren()) do
-            if v:IsA("Accessory") or v:IsA("Tool") then
+            if v:IsA("Accessory") or v:IsA("Tool") or v:IsA("Hat") then
                 assetModel = v
             end
         end

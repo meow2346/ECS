@@ -96,7 +96,7 @@ const LoginModal = props => {
       <div className='row mt-2'>
         <div className='col-12'>
           <p>
-            <a className={s.forgotPass} href='/Login/ResetPasswordRequest.aspx'>Forgot Password?</a>
+            <a className={s.forgotPass} href='/auth/password-reset'>Forgot Password?</a>
           </p>
         </div>
       </div>

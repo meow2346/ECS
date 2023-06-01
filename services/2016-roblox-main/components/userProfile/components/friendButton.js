@@ -14,7 +14,7 @@ const FriendButton = props => {
   const isRequestSent = store.friendStatus === 'RequestSent';
   const isRequestRecieved = store.friendStatus === 'RequestReceived';
 
-  const text = isAlreadyFriend ? 'Remove' : isRequestRecieved ? 'Accept' : isRequestSent ? 'Pending' : 'Add Friend';
+  const text = isAlreadyFriend ? 'Unfriend' : isRequestRecieved ? 'Accept' : isRequestSent ? 'Pending' : 'Add Friend';
   const canFriend = isAlreadyFriend || !isOwnProfile && isAuthenticated && !isRequestSent || isRequestRecieved;
 
   return <Button disabled={!canFriend} style={isAlreadyFriend && { border: '1px solid red', color: 'red' } || undefined} onClick={(e) => {
