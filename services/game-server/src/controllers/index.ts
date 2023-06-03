@@ -883,6 +883,7 @@ export default class CommandHandler extends StdExceptions {
 		return (await getResult(job.jobId, resolutionMultiplier.asset)).thumbnail;
 	}
 
+
 	public async GenerateThumbnailGame(assetId: number, x = 640, y = 360): Promise<string> {
 		const job = this.createSoapRequest(
 			scripts.gameThumbnail

@@ -51,7 +51,7 @@ headPart.Parent = Workspace
 headPart.Anchored = true
 
 local face = Instance.new("Decal")
-face.Texture = "https://economy-simulator.org/asset/?id=2907"
+face.Texture = "rbxasset://textures/face.png"
 face.Name = "face"
 face.Parent = headPart
 

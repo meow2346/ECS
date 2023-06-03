@@ -41,7 +41,7 @@ local assetId = assetId[1];
                 ['type'] = 'Asset',
                 ['assetId'] = assetId,
                 ['thumbnail'] = encoded,
-                ['accessKey'] = "wBTlaKZ3J3CSoVl693g7",
+                ['accessKey'] = "AccessKey",
                 ['jobId'] = jobId,
             }), Enum.HttpContentType.TextPlain)
         end)
