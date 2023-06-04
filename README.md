@@ -33,4 +33,6 @@ You can now move on to step 2 after this.
 
 Step 2. Go to services/api in a command prompt/terminal, then run ```npm i```. This will install the node modules needed for the next command. Now run ```npx knex migrate:latest```. If EVERYTHING was sucessful, all the migrations to the database should work. These tables are required for the site to run as otherwise, the site wouldn't know where to store the data. 
 
-Step 3. Go to services/Roblox/Roblox.Website, and open appsettings.json. Put your database information there, and also change the OwnerUserId to 1, as that is the account that will be automatically created. 
+Step 3. Go to services/Roblox/Roblox.Website, and open appsettings.json. Put your database information there, and also change the OwnerUserId to 1, as that is the account that will be automatically created. Do NOT forget to change your paths! If you're using windows, make sure you paths are like this, with the double backslash \\ ```C:\\Users\\username\\srclocation\\services\\api\\storage\\```.
+
+Step 4. Go into services/Roblox/Roblox.Website in a command prompt/terminal, now run ```dotnet run```. If everything is successful, you should be able to visit the site at http://localhost:5000. If not, check the errors. If services/api/public/images/thumbnails is missing, create the folder. Same for UnsecuredContent. To run in Release mode, use this command ```dotnet run -c Release```.
