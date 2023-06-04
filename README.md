@@ -51,7 +51,7 @@ If you don't have a Roblox account that meets these requirements, go to services
 Once you made the application and then refreshed a second or two later, it should be accepted. Make SURE to name it ```ROBLOX``` in ALL CAPS! Not doing this can cause some issues.
 
 Now that you've set everything up, go to the admin panel at http://localhost:5000/admin, and now set up the accounts you need to set up. 
-- Go to create player, create an account with id 2, name idqwdqdqwdqwdn Nullify it's password.
+- Go to create player, create an account with id 2, name it "UGC", then nullify its password.
 - Create another account with create player with any id (I prefer id 12), with the username "BadDecisions". This is the account used to hold items that get moved automatically from GDPR deletions, and removing items from inventories. This account is **USERNAME SPECIFIC**, so make SURE it's spelt exactly right! Just copy paste mine. Once it's made, permanently ban it. (This is so some other stuff works properly).
 
 Now we shall continue setting up the site.
