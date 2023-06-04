@@ -49,7 +49,7 @@
 		},
 		{
 			name: 'Alting',
-			text: 'Your account has been moderated for buying limiteds on alternative accounts.',
+			text: 'Your account has been moderated for buying limiteds on alternative accounts, or using alternative accounts to farm robux.',
 		},
 		{
 			name: 'Closed as Compromised',
