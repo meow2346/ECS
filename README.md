@@ -9,4 +9,19 @@ You will need the following dependencies:
 - Redis-Server (WSL or Linux)
 - Node.js (Version 18.XX+)
 - Go/GoLang (1.18+)
-- Dotnet (6, 7 support might be added soon.)
+- .NET/dotnet (6, 7 support might be added soon.)
+
+Step 1. Create a user and database in PostgreSQL, make sure login is enabled for it. Once that's done, put a file in services/api named config.json. Put this in it:
+```
+{
+    "knex": {
+	"client": "pg",
+        "connection": {
+        "host": "127.0.0.1",
+        "user": "postgres",
+        "password": "postgres",
+        "database": "db_name_here"
+        }
+    }
+}
+```
