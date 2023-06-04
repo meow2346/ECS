@@ -59,6 +59,7 @@ Now we shall continue setting up the site.
 Step 7. To start up the AssetValidationService, go to services/AssetValidationServiceV2 in a cmd/terminal, then run ```go run main.go```. This will start up asset validation service, and will allow you to upload items.
 
 Step 8. RCC/Rendering setup time: Go to services/RCCService, in a command prompt, then run ```RCCService.exe -console -placeid:1818```.  If everything was correctly, RCCService should start up. Go to services/game-server, and add a file named config.json. Put this in it:
+```
 {
     "rcc": "rcc path here",
     "authorization": "render auth here",
@@ -69,6 +70,7 @@ Step 8. RCC/Rendering setup time: Go to services/RCCService, in a command prompt
     "thumbnailWebsocketPort": 3189,
     "dockerDisabled": true
 }
+```
 
 Once that's done, in services/game-server, run ```npm i```, then ```npm run build```, then ```npm run start```. If everything is correctly, in a few seconds you should see "[info] new connection" in the console of game-server. Request a render, and if everything went properly, it will work.
 
