@@ -11,7 +11,7 @@ You will need the following dependencies:
 - Go/GoLang (1.18+)
 - .NET/dotnet (6, 7 support might be added soon.)
 
-Step 1. Create a user and database in PostgreSQL, make sure login is enabled for it. Once that's done, put a file in services/api named config.json. Put this in it:
+Step 1. Create a user and database in PostgreSQL, make sure login is enabled for it. Once that's done, put a file in services/api named config.json. Put this in it (replacing the DB, User, and Pass with your credentials):
 ```
 {
     "knex": {
@@ -25,3 +25,6 @@ Step 1. Create a user and database in PostgreSQL, make sure login is enabled for
     }
 }
 ```
+You can now move on to step 2 after this.
+
+Step 2. Go to services/api in a command prompt/terminal, then run ```npm i```. This will install the node modules needed for the next command. Now run ```npx knex migrate:latest```. If EVERYTHING was sucessful, all the migrations to the database should work. These tables are required for the site to run as otherwise, the site wouldn't know where to store the data. 
