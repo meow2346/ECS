@@ -467,8 +467,9 @@ public class WebController : ControllerBase
             $"--authenticationUrl {Roblox.Configuration.BaseUrl}/Login/Negotiate.ashx --authenticationTicket {ticket} --joinScriptUrl {Configuration.BaseUrl}/placelauncher.ashx?ticket={encodedTicket}";
         return new
         {
-            authenticationTicket = ticket,
+            //authenticationTicket = ticket,
             joinScriptUrl = Configuration.BaseUrl + "/placelauncher.ashx?ticket=" + encodedTicket, 
+            retroArgs = args,
         };
 #else
         throw new Exception("Feature disabled");

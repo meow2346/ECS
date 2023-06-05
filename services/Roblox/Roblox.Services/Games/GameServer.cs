@@ -537,7 +537,7 @@ public class GameServerService : ServiceBase
             return await GetServerForPlaceV2(placeId);
         }
         
-        if (false)
+        if (true)
         {
             var job = CreateGameServerTicket(placeId, "127.0.0.1:53640");
             return new()
