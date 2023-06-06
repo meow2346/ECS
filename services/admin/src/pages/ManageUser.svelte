@@ -413,7 +413,9 @@
 				{#if rank.hasPermission("GiveUserBadge") || rank.hasPermission("DeleteUserBadge")}
 					<a use:link class="btn-outline-dark btn w-100" href={`/admin/manage-badges-user/${userId}`}><AwardIcon /> Manage Badges</a>
 				{/if}
-
+				<Permission p="GetUserModerationHistory">
+					<a use:link class="btn-outline-dark btn w-100" href={`/admin/moderation-history/${userId}`}><DatabaseIcon /> Moderation History</a>
+				</Permission>
 				<Permission p="DeleteUsername">
 					<a use:link class="btn-outline-dark btn w-100" href={`/admin/manage-usernames/${userId}`}><MailIcon /> Manage Usernames</a>
 				</Permission>

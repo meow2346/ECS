@@ -813,6 +813,16 @@ public class AdminApiController : ControllerBase
                 author = userSession.userId,
                 expires = expirationDate,
             });
+        // insert into user ban history
+        await db.ExecuteAsync(
+            "INSERT INTO moderation_user_ban (user_id, reason, author_user_id, expired_at, internal_reason) VALUES (:user_id, :reason, :author, :expires, :internal_reason)", new
+            {
+                internal_reason = request.internalReason,
+                user_id = request.userId,
+                request.reason,
+                author = userSession.userId,
+                expires = expirationDate,
+            });
         // log
         await db.ExecuteAsync("INSERT INTO moderation_ban (user_id, actor_id, reason, internal_reason, expired_at) VALUES (:user_id, :author, :reason, :internal_reason, :expires)", new
         {
@@ -2036,7 +2046,7 @@ Thank you for your understanding,
         {
             var fileData = request.rbxm.OpenReadStream();
             // TODO: we should probably be validating audio and image uploads...
-            if (request.assetTypeId != Type.Audio && request.assetTypeId != Type.Image)
+            if (request.assetTypeId != Type.Audio && request.assetTypeId != Type.Image && request.assetTypeId != Type.Mesh && request.assetTypeId != Type.Place)
             {
                 var isOk = await services.assets.ValidateAssetFile(fileData, request.assetTypeId);
                 if (!isOk)
@@ -2202,6 +2212,21 @@ Thank you for your understanding,
     public async Task<dynamic> GetAllUserTransactions(long userId, int offset, int limit)
     {
         return await services.economy.GetTransactions(userId, CreatorType.User, limit, offset);
+    }
+
+    // another custom feature by Aep
+
+    [HttpGet("users/{userId:long}/moderation-history"), StaffFilter(Access.GetUserTransactions)]
+    public async Task<dynamic> GetFullModerationHistory(long userId, int offset, int limit)
+    {
+        var result = await db.QueryAsync(
+        "SELECT * FROM moderation_user_ban WHERE user_id = :userid ORDER BY id DESC",
+        new
+        {
+            userid = userId
+        });
+
+        return result;
     }
 
     [HttpGet("users/{userId:long}/trades"), StaffFilter(Access.GetUserTransactions)]

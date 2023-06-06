@@ -20,6 +20,7 @@ public enum Access
     GetUserDetailed,
     UnbanUser,
     BanUser,
+    GetUserModerationHistory,
     CreateMessage,
     GetAdminMessages,
     NullifyPassword,
@@ -83,4 +84,5 @@ public enum Access
     CreateBundleCopiedFromRoblox,
     GetSaleHistoryForAsset,
     RefundAndDeleteFirstPartyAssetSale,
+    ManagePromocodes,
 }

@@ -29,6 +29,7 @@
 import Lottery from "./pages/Lottery.svelte";
 import FeatureFlags from "./pages/FeatureFlags.svelte";
 import ManageUserTransactions from "./pages/ManageUserTransactions.svelte";
+import UserModerationHistory from "./pages/ViewModerationHistory.svelte";
 import Applications from "./pages/Applications.svelte";
 import ForumPosts from "./pages/TextModeration.svelte";
 import Groups from "./pages/Groups.svelte";
@@ -86,6 +87,9 @@ import ForceApplication from "./pages/ForceApplication.svelte";
 		</Route>
 		<Route path="/admin/user-transactions/:userId" let:params>
 			<ManageUserTransactions userId={params.userId} />
+		</Route>
+		<Route path="/admin/moderation-history/:userId" let:params>
+			<UserModerationHistory userId={params.userId} />
 		</Route>
 		<Route path="/admin/user-trades/:userId" let:params>
 			<ManageUserTrades userId={params.userId} />
