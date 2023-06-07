@@ -2279,10 +2279,8 @@ Thank you for your understanding,
         var userData = await services.users.GetUserById(userId);
         if (userData.isModerator || userData.isAdmin || await IsStaff(userData.userId))
             throw new StaffException("Cannot change this user's username");
-        // ban the username if chosen to
-        if (banUsername != null) {
-            await services.users.AddBadUsername(userData.username);
-        }
+        // ban the username
+        await services.users.AddBadUsername(userData.username);
         // reset
         await services.users.ResetUsername(userId, userSession.userId);
         // message

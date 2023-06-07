@@ -264,8 +264,8 @@
 							</td>
 							<td><a use:link href={`/admin/manage-user/${i.id}`}>{i.id}</a></td>
 							<td><a use:link href={`/admin/manage-user/${i.id}`}>{i.username}</a></td>
-							<td>{moment(i.created_at).fromNow()} ({moment(i.created_at).format("MMM DD YYYY, h:mm A")})</td>
-							<td>{moment(i.online_at).fromNow()} ({moment(i.online_at).format("MMM DD YYYY, h:mm A")})</td>
+							<td>{moment(i.created_at).format("MMM DD YYYY, h:mm A")}</td>
+							<td>{moment(i.online_at).format("MMM DD YYYY, h:mm A")}</td>
 							<td>
 								{#if i.status === "Ok"}
 									<span class="badge bg-success">OK</span>
