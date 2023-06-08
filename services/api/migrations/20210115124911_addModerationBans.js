@@ -7,9 +7,13 @@ exports.up = async (knex) => {
         t.bigIncrements('id').notNullable().unsigned();
         // user id
         t.bigInteger('user_id').notNullable().unsigned(); // id of the user banned
+
+t.string('internal_reason', 255).notNullable(); // the reason
         t.bigInteger('author_user_id').notNullable().unsigned(); // userid who did the ban
         t.string('reason', 255).notNullable(); // the reason
         t.dateTime("created_at").notNullable().defaultTo(knex.fn.now()); // date ban was created
+
+t.dateTime("expired_at").notNullable().defaultTo(knex.fn.now()); // date ban expires
         t.dateTime("updated_at").notNullable().defaultTo(knex.fn.now()); // date ban was last updated
 
         t.index(['author_user_id']);
@@ -22,5 +26,5 @@ exports.up = async (knex) => {
  * @param {import('knex')} knex 
  */
 exports.down = async (knex) => {
-    await knex.schema.dropTable('user_ban');
+    await knex.schema.dropTable('moderation_user_ban');
 };
