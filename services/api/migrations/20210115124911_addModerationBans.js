@@ -13,8 +13,8 @@ t.string('internal_reason', 255).notNullable(); // the reason
         t.string('reason', 255).notNullable(); // the reason
         t.dateTime("created_at").notNullable().defaultTo(knex.fn.now()); // date ban was created
 
-t.dateTime("expired_at").notNullable().defaultTo(knex.fn.now()); // date ban expires
-        t.dateTime("updated_at").notNullable().defaultTo(knex.fn.now()); // date ban was last updated
+t.dateTime("expired_at").defaultTo(knex.fn.now()); // date ban expires
+        t.dateTime("updated_at").defaultTo(knex.fn.now()); // date ban was last updated
 
         t.index(['author_user_id']);
         t.index(['user_id']);
