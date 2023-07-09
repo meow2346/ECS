@@ -1,3 +1,6 @@
+# FYI
+I no longer work on this project. I now work on Sqarin, a new 2017 revival. You can play it here at https://www.sqarin.com. I would not recommend joining any public revivals using this code, you'd be better off hosting it yourself.
+
 # ECS
 Economy Simulator is a ROBLOX revival that allows you to Relive Roblox 2016.
 
